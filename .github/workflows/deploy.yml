@@ -1,21 +1,21 @@
 name: Deploy to IIS
 
 on:
-  workflow_dispatch:   # manually trigger karoge
+  workflow_dispatch:
 
 jobs:
   build-deploy:
-    runs-on: windows_runner  # ye tumhare IIS server runner pe chalega
+    runs-on: self-hosted
 
     steps:
       - name: Restore
         run: |
-          "C:\Program Files\dotnet\dotnet.exe" restore D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln
+          & "C:\Program Files\dotnet\dotnet.exe" restore D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln
 
       - name: Build
         run: |
-          "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln
+          & "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln
 
       - name: Deploy
         run: |
-          "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="D:\IIS-Project-De-windows\QMSProject\clover.qms.web" -dest:contentPath="D:\IIS-Deploy\QMS"
+          & "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="D:\IIS-Project-De-windows\QMSProject\clover.qms.web" -dest:contentPath="D:\IIS-Deploy\QMS"
