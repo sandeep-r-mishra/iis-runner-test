@@ -23,5 +23,5 @@ jobs:
             -dest:contentPath="D:\IIS-Deploy\QMS" `
             -disableLink:AppPoolExtension `
             -disableLink:CertificateExtension `
-            -disableLink:Backup `
-            -enableRule:DoNotDeleteRule
+            -enableRule:DoNotDeleteRule `
+            -enableRule:DoNotBackupRule
