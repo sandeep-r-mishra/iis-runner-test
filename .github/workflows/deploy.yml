@@ -5,17 +5,23 @@ on:
 
 jobs:
   build-deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted   # IIS server runner
 
     steps:
-      - name: Restore
+      - name: Restore NuGet packages
         run: |
-          & "C:\Program Files\dotnet\dotnet.exe" restore D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln
+          & "C:\Program Files\dotnet\dotnet.exe" restore "D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln"
 
-      - name: Build
+      - name: Build Solution
         run: |
-          & "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln
+          & "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" "D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln"
 
-      - name: Deploy
+      - name: Deploy to IIS via WebDeploy
         run: |
-          & "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="D:\IIS-Project-De-windows\QMSProject\clover.qms.web" -dest:contentPath="D:\IIS-Deploy\QMS"
+          & "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync `
+            -source:contentPath="D:\IIS-Project-De-windows\QMSProject\clover.qms.web" `
+            -dest:contentPath="D:\IIS-Deploy\QMS" `
+            -disableLink:AppPoolExtension `
+            -disableLink:CertificateExtension `
+            -disableLink:Backup `
+            -enableRule:DoNotDeleteRule
