@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-deploy:
-    runs-on: self-hosted   # ye tumhare IIS server runner pe chalega
+    runs-on: windows_runner  # ye tumhare IIS server runner pe chalega
 
     steps:
       - name: Restore
