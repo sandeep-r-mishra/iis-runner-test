@@ -1,42 +1,25 @@
-name: Deploy ASP.NET Framework App to IIS
+name: Deploy to IIS
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build-deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted   # IIS server runner
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Restore NuGet packages
       - name: Restore NuGet packages
         run: |
           & "C:\Program Files\dotnet\dotnet.exe" restore "D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln"
-
-      # Build and Publish Solution with MSBuild
-      - name: Build and Publish Solution
+      - name: Build Solution
         run: |
-          & "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" "D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln" `
-            /p:Configuration=Release `
-            /p:DeployOnBuild=true `
-            /p:WebPublishMethod=FileSystem `
-            /p:PublishUrl="D:\publish\QMS"
-
-      # Deploy using WebDeploy
-      - name: Deploy to IIS
+          & "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" "D:\IIS-Project-De-windows\QMSProject\clover.qms.web\clover.qms.web.sln"
+      - name: Deploy to IIS via WebDeploy
         run: |
           & "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync `
-            -source:contentPath="D:\publish\QMS" `
-            -dest:contentPath="C:\inetpub\wwwroot\QMS" `
+            -source:contentPath="D:\IIS-Project-De-windows\QMSProject\clover.qms.web" `
+            -dest:contentPath="D:\IIS-Deploy\QMS" `
             -disableLink:AppPoolExtension `
             -disableLink:CertificateExtension `
-            -enableRule:DoNotDeleteRule
-
-      # Restart IIS (optional, ensures new code is loaded)
-      - name: Restart IIS
-        run: iisreset
+            -enableRule:DoNotDeleteRule `
+            -enableRule:DoNotBackupRule
